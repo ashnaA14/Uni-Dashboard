@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="shortcut icon" href="./images/logo.png">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="logo" title="University Management System">
+            <img src="../static/images/logo.png" alt=""> 
+            <h2>U<span class="danger">M</span>S</h2>
+        </div>
+        <div class="navbar">
+            <a href="/index" class="active">
+                <span class="material-icons-sharp">home</span>
+                <h3>Home</h3>
+            </a>
+            {%if role=='admin' or role==1 %}
+                <a href="/students" onclick="timeTableAll()">
+                    <span class="material-icons-sharp">today</span>
+                    <h3>Students</h3>
+                </a> 
+                <a href="/add">
+                    <span class="material-icons-sharp">grid_view</span>
+                    <h3>Add Student</h3>
+                </a>
+            {%endif%}
+            <a href="/attendance">
+                <span class="material-icons-sharp">grid_view</span>
+                <h3>Attendance</h3>
+            </a>
+            
+            <a href="/password">
+                <span class="material-icons-sharp">password</span>
+                <h3>Change Password</h3>
+            </a>
+            <a href="/logout">
+                <span class="material-icons-sharp" onclick="">logout</span>
+                <h3>Logout</h3>
+            </a>
+        </div>
+        <div id="profile-btn">
+            <span class="material-icons-sharp">person</span>
+        </div>
+        <div class="theme-toggler">
+            <span class="material-icons-sharp active">light_mode</span>
+            <span class="material-icons-sharp">dark_mode</span>
+        </div>
+        
+    </header>
+    <div class="container-table">
+        <main>
+            {%if role=='admin' or role==1 %}
+            <h2>Pending Attendances</h2>
+            <div class="timetable" id="timetable">
+                <span class="closeBtn" onclick="timeTableAll()"></span>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                        <th>Course Name</th>
+                        <th>Date</th>
+                        <th>Student Status</th>
+                        <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in pending %}
+                    <tr>
+                      <td>{{ p[7] }}</td>
+                      <td>{{ p[6] }}</td>
+                      <td>{{ p[3] }}</td>
+                      <td>{{ p[4] }}</td>
+                      <td>
+                        <form action="/attendance/approve" method="POST" style="display:inline;">
+                          <input type="hidden" name="attendance_id" value="{{ p[0] }}">
+                          <input type="hidden" name="attendance_date" value="{{ p[3] }}">
+                          
+                          <button type="submit">Approve</button>
+                        </form>
+                        <form action="/attendance/deny" method="POST" style="display:inline;">
+                          <input type="hidden" name="attendance_id" value="{{ p[0] }}">
+                          <input type="hidden" name="attendance_date" value="{{ p[3] }}">
+                          <button type="submit">Deny</button>
+                        </form>
+                      </td>
+                    </tr>
+                        {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+            {%endif%}
+
+            {%if role=='student' or role==2 %}
+
+
+            <div class="student-section">
+       
+                <div class="form-container">
+                  <form id="signUpForm" action="/mark" method="post">
+                    <h1>Mark Attendance</h1>
+                    <select name="course_id" required>
+                      <option value="" disabled selected>Select Course</option>
+                      {% for course in enrolled_courses %}
+                        <option value="{{ course[0] }}">{{ course[1] }}</option>
+                      {% endfor %}
+                    </select>
+                    <input type="hidden" name="student_id" value="{{ student_id }}" />
+                    <input type="date" name="date" placeholder="Date" required />
+                    <select name="status" required>
+                      <option value="" disabled selected>Select Status</option>
+                      <option value="present">Present</option>
+                      <option value="absent">Absent</option>
+                      <option value="late">Late</option>
+                      <option value="excused">Excused</option>
+                    </select>
+                    <div class="button-container">
+                      
+                      <button type="submit">Submit</button>
+                    </div>
+                  </form>
+                </div>
+
+
+              
+            {%endif%}
+            <br>
+        </main>
+        </div>
+    </div>
+
+    <script src="../static/js/timeTable.js"></script>
+    <script src="../static/js/app.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="shortcut icon" href="./images/logo.png">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="logo" title="University Management System">
+            <img src="../static/images/logo.png" alt=""> 
+            <h2>U<span class="danger">M</span>S</h2>
+        </div>
+        <div class="navbar">
+            <a href="/index" class="active">
+                <span class="material-icons-sharp">home</span>
+                <h3>Home</h3>
+            </a>
+            {%if role=='admin' or role==1 %}
+                <a href="/students" onclick="timeTableAll()">
+                    <span class="material-icons-sharp">today</span>
+                    <h3>Students</h3>
+                </a> 
+                <a href="/add">
+                    <span class="material-icons-sharp">grid_view</span>
+                    <h3>Add Student</h3>
+                </a>
+            {%endif%}
+            <a href="/attendance">
+                <span class="material-icons-sharp">grid_view</span>
+                <h3>Attendance</h3>
+            </a>
+            
+            <a href="/password">
+                <span class="material-icons-sharp">password</span>
+                <h3>Change Password</h3>
+            </a>
+            <a href="/logout">
+                <span class="material-icons-sharp" onclick="">logout</span>
+                <h3>Logout</h3>
+            </a>
+        </div>
+        <div id="profile-btn">
+            <span class="material-icons-sharp">person</span>
+        </div>
+        <div class="theme-toggler">
+            <span class="material-icons-sharp active">light_mode</span>
+            <span class="material-icons-sharp">dark_mode</span>
+        </div>
+        
+    </header>
+    <div class="container">
+        <aside>
+            <div class="profile">
+                <div class="top">
+                    <div class="profile-photo">
+                        <img src="../static/images/pfp4.jpeg" alt="">
+                    </div>
+                    <div class="info">
+                        <p>Hey, <b>{{name|capitalize}}</b> </p>
+                    </div>
+                </div>
+                <div class="about">
+                    
+                    <h5>DOB</h5>
+                    <p>{{dob}}</p>
+                    <h5>Contact</h5>
+                    <p>{{number}}</p>
+                    <h5>Email</h5>
+                    <p>{{email}}</p>
+                </div>
+            </div>
+        </aside>
+
+        <main>
+            {%if role=='admin' or role==1 %}
+                <h1>Courses</h1>
+                    <div class="subjects">
+                        {%for course in courses%}
+                            <div class="eg">
+                                <span class="material-icons-sharp">{{course[4]}}</span> <!--logo instead of arch :course[4]-->
+                                <h3>{{course[1]}}</h3> <!--name of course: course[1]-->
+                                {%for test in tests%}
+                                    {%if test[1]==course[1]%}
+                                    <div class="progress">
+                                        <svg><circle cx="38" cy="38" r="38"></circle></svg>
+                                        <div class="number"><p>{{test[0]}}</p></div> <!--no of students in class-->
+                                    </div>
+                                    {%endif%}
+                                {%endfor%}
+                            </div>
+                        {%endfor%}
+                    </div>
+                {%endif%}
+                
+            
+            {%if role=='admin' or role==1 %}
+            <div class="timetable" id="timetable">
+                <span class="closeBtn" onclick="timeTableAll()">X</span>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Serial ID</th>
+                            <th>Class Name</th>
+                            <th>Day</th>
+                            <th>Start time</th>
+                            <th>End time</th>
+                            <th>Room No.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {%for table in timetable%}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            <td>
+                                <a href="{{ url_for('class_details', class_id=table[1]) }}">
+                                    {{ table[6] }}
+                                </a>
+                            </td>
+                            <td>{{table[5]}}</td>
+                            <td>{{table[2]}}</td>
+                            <td>{{table[3]}}</td>
+                            <td>{{table[4]}}</td>
+                        </tr>
+                        {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+            {%endif%}
+
+            {%if role=='student' or role==2 %}
+                <div class="timetable" id="timetable">
+                    <h2>Your Timetable</h2>
+                    <span class="closeBtn" onclick="timeTableAll()">X</span>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Serial ID</th>
+                                <th>Class Name</th>
+                                <th>Day</th>
+                                <th>Start time</th>
+                                <th>End time</th>
+                                <th>Room No.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {%for sub in subs%}
+                            <tr>
+                                <td>{{loop.index}}</td>
+                                <td>{{sub[6]}}</td>
+                                <td>{{sub[5]}}</td>
+                                <td>{{sub[2]}}</td>
+                                <td>{{sub[3]}}</td>
+                                <td>{{sub[4]}}</td>
+                            </tr>
+                            {%endfor%}
+                        </tbody>
+                    </table>
+                </div>
+                <br>
+                <div class="timetable" id="timetable">
+                    <h2>Your Attendance Records</h2>
+                    <span class="closeBtn" onclick="timeTableAll()">X</span>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Index</th>
+                                <th>Date</th>
+                                <th>Class Name</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {%for d in data%}
+                            <tr>
+                                <td>{{loop.index}}</td>
+                                <td>{{d[0]}}</td>
+                                <td>{{d[2]}}</td>
+                                <td>{{d[1]}}</td>
+                            </tr>
+                            {%endfor%}
+                        </tbody>
+                    </table>
+                </div>
+            {%endif%}
+            <br>
+        </main>
+        </div>
+    </div>
+
+    <script src="../static/js/timeTable.js"></script>
+    <script src="../static/js/app.js"></script>
+</body>
+</html>

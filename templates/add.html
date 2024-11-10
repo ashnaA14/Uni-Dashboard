@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>University Dashboard</title>
+  <link rel="stylesheet" href="../static/css/styles.css">
+</head>
+<body>
+    <h2>Add a Student</h2>
+    {% if message %}
+    <div class="alert">{{ message }}</div>
+    {% endif %}
+    <div class="container" id="container">
+
+        <!-- Sign-Up Form -->
+        
+        <!-- <div class="form-container sign-up-container"> -->
+            <form id="signUpForm" action="/signup" method="post">
+                <h1>Create Account</h1>
+                <!-- <span>or use your email for registration</span> -->
+                <input id="signUpName" type="text" name="name" placeholder="Name" required/>
+                <input id="signUpEmail" type="email" name="email" placeholder="Email" required/>
+                <input id="signUpdob" type="date" name="dob" placeholder="Date of Birth" required/>
+                <input id="signUpnumber" type="number" name="number" placeholder="contact number" required/>
+                <input id="signUpPassword" minlength="8" type="password" name="password" placeholder="Password" required/>
+                <input id="signUpConfirmPassword" type="password" name="confirm" placeholder="Confirm Password" required/>
+                <br>
+                <br>
+                <div class="button-container">
+                    <button type="button" onclick="window.location.href='/index'">Home</button>
+                    <!-- <a href="/">add</a>
+                    <button type="submit" formaction="/">Add</button> -->
+                    
+                    <button type="submit">Add</button>
+                </div>
+            </form>
+        <!-- </div> -->
+    </div>
+</body>
+<script src="../static/js/custom.js"></script>
+</html>
